@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albin A P | Android Developer</title>
+    <meta name="description" content="Portfolio of Albin A P, Android Developer">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Fonts: Outfit for sleek modern UI, Fira Code for Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- VS Code Codicons for exact icon matching -->
+    <link href="https://cdn.jsdelivr.net/npm/@vscode/codicons/dist/codicon.css" rel="stylesheet">
+    <!-- Confetti for easter egg -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div class="vscode-app">
+        <!-- Title Bar -->
+        <header class="titlebar">
+            <div class="titlebar-nav">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg" alt="VS Code Icon" class="vscode-icon">
+                <span id="title-bar-file" class="active">File</span>
+                <span>Edit</span>
+                <span>Selection</span>
+                <span>View</span>
+                <span>Go</span>
+                <span>Run</span>
+                <span id="title-bar-terminal-toggle" style="cursor: pointer;">Terminal</span>
+                <span>Help</span>
+            </div>
+            <div class="titlebar-title">
+                Albin A P - Portfolio Setup
+            </div>
+            <div class="titlebar-controls">
+                <span class="control minimize"></span>
+                <span class="control maximize"></span>
+                <span class="control close"></span>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <!-- Activity Bar (Far Left) -->
+            <nav class="activity-bar">
+                <div class="activity-top">
+                    <div class="activity-icon active" title="Explorer"><i class="codicon codicon-files" style="font-size: 24px;"></i></div>
+                    <div class="activity-icon" title="Search"><i class="codicon codicon-search" style="font-size: 24px;"></i></div>
+                    <div class="activity-icon" title="Source Control"><i class="codicon codicon-source-control" style="font-size: 24px;"></i></div>
+                    <div class="activity-icon" id="activity-debug-toggle" title="Run and Debug"><i class="codicon codicon-debug-alt" style="font-size: 24px;"></i></div>
+                    <div class="activity-icon" title="Extensions"><i class="codicon codicon-extensions" style="font-size: 24px;"></i></div>
+                </div>
+                <div class="activity-bottom">
+                    <div class="activity-icon" id="activity-terminal-toggle" title="Toggle Terminal"><i class="codicon codicon-terminal" style="font-size: 24px;"></i></div>
+                    <div class="activity-icon" title="Settings"><i class="codicon codicon-settings-gear" style="font-size: 24px;"></i></div>
+                </div>
+            </nav>
+
+            <!-- Sidebar (Explorer + Extensions) -->
+            <aside class="sidebar">
+
+                <!-- EXPLORER VIEW -->
+                <div id="sidebar-explorer">
+                    <div class="sidebar-header">
+                        <span>EXPLORER</span>
+                        <i data-lucide="more-horizontal" style="width: 16px;"></i>
+                    </div>
+                    <div class="sidebar-section">
+                        <div class="section-title">
+                            <i data-lucide="chevron-down" style="width: 14px;"></i> PORTFOLIO
+                        </div>
+                        <ul class="file-list">
+                            <li class="file-item active" data-target="home">
+                                <span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/react_ts.svg" width="16" height="16"></span> home.tsx
+                            </li>
+                            <li class="file-item" data-target="about">
+                                <span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/html.svg" width="16" height="16"></span> about.html
+                            </li>
+                            <li class="file-item" data-target="skills">
+                                <span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/json.svg" width="16" height="16"></span> skills.json
+                            </li>
+                            <li class="file-item" data-target="projects">
+                                <span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/javascript.svg" width="16" height="16"></span> projects.js
+                            </li>
+                            <li class="file-item" data-target="experience">
+                                <span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/typescript.svg" width="16" height="16"></span> experience.ts
+                            </li>
+                            <li class="file-item" data-target="contact">
+                                <span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/css.svg" width="16" height="16"></span> contact.css
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- EXTENSIONS VIEW -->
+                <div id="sidebar-extensions" style="display:none;">
+                    <div class="sidebar-header">
+                        <span>EXTENSIONS</span>
+                        <i class="codicon codicon-filter" style="font-size:14px;"></i>
+                    </div>
+                    <div class="ext-search-wrapper">
+                        <i class="codicon codicon-search" style="font-size:13px; color: var(--text-muted);"></i>
+                        <input type="text" id="ext-search" placeholder="Search Extensions in Marketplace" autocomplete="off">
+                    </div>
+                    <div class="ext-section-label">INSTALLED</div>
+                    <ul class="ext-list" id="ext-list">
+                        <li class="ext-item" data-ext="kotlin">
+                            <div class="ext-logo" style="background: #7F52FF;"><i class="codicon codicon-symbol-class"></i></div>
+                            <div class="ext-info">
+                                <div class="ext-name">Kotlin Language Support <span class="ext-badge">✔</span></div>
+                                <div class="ext-publisher">JetBrains · Android Dev</div>
+                                <div class="ext-rating">★★★★★ <span>2.4M</span></div>
+                            </div>
+                        </li>
+                        <li class="ext-item" data-ext="compose">
+                            <div class="ext-logo" style="background: #4285F4;"><i class="codicon codicon-layout"></i></div>
+                            <div class="ext-info">
+                                <div class="ext-name">Jetpack Compose Preview <span class="ext-badge">✔</span></div>
+                                <div class="ext-publisher">Google · UI Toolkit</div>
+                                <div class="ext-rating">★★★★★ <span>1.8M</span></div>
+                            </div>
+                        </li>
+                        <li class="ext-item" data-ext="firebase">
+                            <div class="ext-logo" style="background: #FFCA28; color: #333;"><i class="codicon codicon-database"></i></div>
+                            <div class="ext-info">
+                                <div class="ext-name">Firebase Tools <span class="ext-badge">✔</span></div>
+                                <div class="ext-publisher">Google · Backend</div>
+                                <div class="ext-rating">★★★★☆ <span>3.1M</span></div>
+                            </div>
+                        </li>
+                        <li class="ext-item" data-ext="retrofit">
+                            <div class="ext-logo" style="background: #48BB78;"><i class="codicon codicon-cloud"></i></div>
+                            <div class="ext-info">
+                                <div class="ext-name">Retrofit HTTP Client <span class="ext-badge">✔</span></div>
+                                <div class="ext-publisher">Square · Networking</div>
+                                <div class="ext-rating">★★★★★ <span>980K</span></div>
+                            </div>
+                        </li>
+                        <li class="ext-item" data-ext="room">
+                            <div class="ext-logo" style="background: #ED8936;"><i class="codicon codicon-server"></i></div>
+                            <div class="ext-info">
+                                <div class="ext-name">Room Database <span class="ext-badge">✔</span></div>
+                                <div class="ext-publisher">Google · Persistence</div>
+                                <div class="ext-rating">★★★★★ <span>1.2M</span></div>
+                            </div>
+                        </li>
+                        <li class="ext-item" data-ext="hilt">
+                            <div class="ext-logo" style="background: #F56565;"><i class="codicon codicon-package"></i></div>
+                            <div class="ext-info">
+                                <div class="ext-name">Hilt Dependency Injection <span class="ext-badge">✔</span></div>
+                                <div class="ext-publisher">Google · Architecture</div>
+                                <div class="ext-rating">★★★★★ <span>760K</span></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </aside>
+
+            <!-- Editor Area -->
+            <main class="editor-area" style="position: relative;">
+                <!-- Global Three.js Canvas Container -->
+                <div id="threejs-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; pointer-events: none;"></div>
+
+                <!-- Tabs -->
+                <div class="editor-tabs" style="position: relative; z-index: 10;">
+                    <div class="tab active" data-target="home"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/react_ts.svg" width="16" height="16"></span> home.tsx <span class="close-tab">&times;</span></div>
+                    <div class="tab" data-target="about"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/html.svg" width="16" height="16"></span> about.html <span class="close-tab">&times;</span></div>
+                    <div class="tab" data-target="skills"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/json.svg" width="16" height="16"></span> skills.json <span class="close-tab">&times;</span></div>
+                    <div class="tab" data-target="projects"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/javascript.svg" width="16" height="16"></span> projects.js <span class="close-tab">&times;</span></div>
+                    <div class="tab" data-target="experience"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/typescript.svg" width="16" height="16"></span> experience.ts <span class="close-tab">&times;</span></div>
+                    <div class="tab" data-target="contact"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/css.svg" width="16" height="16"></span> contact.css <span class="close-tab">&times;</span></div>
+                </div>
+                
+                <!-- Breadcrumbs -->
+                <div class="breadcrumbs" style="position: relative; z-index: 10;">
+                    <span>portfolio</span> <i data-lucide="chevron-right" size="12"></i> <span id="current-file-breadcrumb">home.tsx</span>
+                </div>
+
+                <!-- Content Panels -->
+                <div class="editor-content" style="position: relative; z-index: 1;">
+                    
+                    <!-- HOME (.tsx) -->
+                    <div class="panel active" id="panel-home">
+                        <div class="hero-container">
+                            <div class="hero-glass">
+                                <div class="badge">Open for Roles</div>
+                                <h1>Albin A P</h1>
+                                <div class="dynamic-roles">
+                                    <span class="gradient-text">Android Developer</span>
+                                </div>
+                                <p class="hero-desc">I craft seamless, high-performance Android applications. Passionate about Kotlin, Jetpack Compose, and modern mobile architecture.</p>
+                                
+                                <div class="hero-actions">
+                                    <button class="btn btn-primary" onclick="document.querySelector('.file-item[data-target=\'projects\']').click()">
+                                        View Work <i data-lucide="arrow-right" size="16"></i>
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="document.querySelector('.file-item[data-target=\'contact\']').click()">
+                                        Contact Me
+                                    </button>
+                                </div>
+    
+                                <div class="stats-row">
+                                    <div class="stat-card">
+                                        <div class="accent">2+</div>
+                                        <div>Years Exp.</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="accent">10+</div>
+                                        <div>Apps Built</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="accent">∞</div>
+                                        <div>Motivation</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ABOUT (.html) -->
+                    <div class="panel" id="panel-about">
+                        <div class="rich-layout">
+                            <div class="about-grid">
+                                <div class="about-image-wrapper">
+                                    <img src="profile.jpg" alt="Albin A P" class="about-profile-img">
+                                </div>
+                                <div class="about-content">
+                                    <h2 class="section-heading">About Me</h2>
+                                    <p class="rich-text">
+                                        I am Albin A P, a passionate <span class="highlight">Android Developer</span> dedicated to building robust, scalable, and beautiful mobile applications.
+                                    </p>
+                                    <p class="rich-text">
+                                        I specialize in leveraging Modern Android Development (MAD) tools like <span class="highlight">Kotlin</span> and <span class="highlight">Jetpack Compose</span> to deliver fluid user experiences and maintainable codebases. I consider architecture just as important as aesthetics.
+                                    </p>
+                                    <div class="education-card">
+                                        <div class="edu-icon"><i data-lucide="graduation-cap"></i></div>
+                                        <div class="edu-details">
+                                            <h3>Bachelor of Technology - BTech, Computer Science</h3>
+                                            <p>College of Engineering, Kidangoor <br> 2021 – 2025 <br> Grade: 9.17</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SKILLS (.json) -->
+                    <div class="panel" id="panel-skills">
+                        <div class="rich-layout">
+                            <h2 class="section-heading">Technical Arsenal</h2>
+                            
+                            <div class="skill-category">
+                                <h3>Languages</h3>
+                                <div class="skill-flex">
+                                    <span class="skill-pill">Kotlin</span>
+                                </div>
+                            </div>
+
+                            <div class="skill-category">
+                                <h3>Frameworks & Tools</h3>
+                                <div class="skill-flex">
+                                    <span class="skill-pill">Android Studio</span>
+                                    <span class="skill-pill">Jetpack Compose</span>
+                                    <span class="skill-pill">Room Database</span>
+                                    <span class="skill-pill">Retrofit</span>
+                                    <span class="skill-pill">Dagger/Hilt</span>
+                                    <span class="skill-pill">Coroutines</span>
+                                    <span class="skill-pill">Git</span>
+                                </div>
+                            </div>
+
+                            <div class="skill-category">
+                                <h3>Architecture</h3>
+                                <div class="skill-flex">
+                                    <span class="skill-pill">MVVM</span>
+                                    <span class="skill-pill">Clean Architecture</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROJECTS (.js) -->
+                    <div class="panel" id="panel-projects">
+                        <div class="rich-layout">
+                            <h2 class="section-heading">Featured Projects</h2>
+                            <div class="projects-grid">
+                                
+                                <!-- Spotify Clone -->
+                                <div class="glass-card project-ui-card">
+                                    <div class="project-header">
+                                        <i data-lucide="music" class="project-icon"></i>
+                                        <div class="project-links">
+                                            <a href="https://github.com/albinaprasad/SpotifyClone" target="_blank" class="icon-link"><i data-lucide="github"></i></a>
+                                            <a href="https://github.com/albinaprasad/SpotifyClone" target="_blank" class="icon-link"><i data-lucide="external-link"></i></a>
+                                        </div>
+                                    </div>
+                                    <h3>Spotify Clone</h3>
+                                    <p>Modern Android music streaming app with real-time playback, built with MVVM, Jetpack Compose, ExoPlayer, and clean architecture.</p>
+                                    <div class="tech-stack">
+                                        <span>Kotlin</span><span>Compose</span><span>ExoPlayer</span><span>Hilt</span>
+                                    </div>
+                                </div>
+
+                                <!-- Facial Feature Extraction -->
+                                <div class="glass-card project-ui-card">
+                                    <div class="project-header">
+                                        <i data-lucide="scan-face" class="project-icon"></i>
+                                        <div class="project-links">
+                                            <a href="https://github.com/albinaprasad/facial-feature-extraction-app" target="_blank" class="icon-link"><i data-lucide="github"></i></a>
+                                            <a href="https://github.com/albinaprasad/facial-feature-extraction-app" target="_blank" class="icon-link"><i data-lucide="external-link"></i></a>
+                                        </div>
+                                    </div>
+                                    <h3>Facial Feature Extraction</h3>
+                                    <p>Android app using ML Kit and computer vision to detect and extract facial landmarks and features in real-time from the camera feed.</p>
+                                    <div class="tech-stack">
+                                        <span>Kotlin</span><span>ML Kit</span><span>CameraX</span>
+                                    </div>
+                                </div>
+
+                                <!-- Car Overtaking Prediction -->
+                                <div class="glass-card project-ui-card">
+                                    <div class="project-header">
+                                        <i data-lucide="car" class="project-icon"></i>
+                                        <div class="project-links">
+                                            <a href="https://github.com/albinaprasad/car-overtaking-prediction-system" target="_blank" class="icon-link"><i data-lucide="github"></i></a>
+                                            <a href="https://github.com/albinaprasad/car-overtaking-prediction-system" target="_blank" class="icon-link"><i data-lucide="external-link"></i></a>
+                                        </div>
+                                    </div>
+                                    <h3>Car Overtaking Prediction</h3>
+                                    <p>Intelligent system that predicts safe overtaking windows for vehicles using real-time data and machine learning algorithms integrated with Firebase.</p>
+                                    <div class="tech-stack">
+                                        <span>Kotlin</span><span>ML</span><span>Firebase</span>
+                                    </div>
+                                </div>
+
+                                <!-- SkinCare Booking App -->
+                                <div class="glass-card project-ui-card">
+                                    <div class="project-header">
+                                        <i data-lucide="heart-pulse" class="project-icon"></i>
+                                        <div class="project-links">
+                                            <a href="https://github.com/albinaprasad/skin-firts-SkinCareBookingApp-" target="_blank" class="icon-link"><i data-lucide="github"></i></a>
+                                            <a href="https://github.com/albinaprasad/skin-firts-SkinCareBookingApp-" target="_blank" class="icon-link"><i data-lucide="external-link"></i></a>
+                                        </div>
+                                    </div>
+                                    <h3>Skin First — SkinCare Booking</h3>
+                                    <p>Android app enabling patients to book skincare consultations. Built with Kotlin, MVVM, and Firebase Firestore for real-time appointment management.</p>
+                                    <div class="tech-stack">
+                                        <span>Kotlin</span><span>MVVM</span><span>Firebase</span><span>XML</span>
+                                    </div>
+                                </div>
+
+                                <!-- Calculator App -->
+                                <div class="glass-card project-ui-card">
+                                    <div class="project-header">
+                                        <i data-lucide="calculator" class="project-icon"></i>
+                                        <div class="project-links">
+                                            <a href="https://github.com/albinaprasad/CALCULATOR-APP" target="_blank" class="icon-link"><i data-lucide="github"></i></a>
+                                            <a href="https://github.com/albinaprasad/CALCULATOR-APP" target="_blank" class="icon-link"><i data-lucide="external-link"></i></a>
+                                        </div>
+                                    </div>
+                                    <h3>Calculator App</h3>
+                                    <p>A modern, intuitive Kotlin calculator app handling arithmetic operations with a clean, user-friendly Material Design interface.</p>
+                                    <div class="tech-stack">
+                                        <span>Kotlin</span><span>Material Design</span><span>XML</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EXPERIENCE (.ts) -->
+                    <div class="panel" id="panel-experience">
+                        <div class="rich-layout">
+                            <h2 class="section-heading">Experience Timeline</h2>
+                            
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content glass-card">
+                                        <div class="timeline-header">
+                                            <h3>Android Developer</h3>
+                                            <span class="timeline-date">May 2025 - Present</span>
+                                        </div>
+                                        <h4 class="company">Trenser Technology Solutions (P) Ltd. · Full-time</h4>
+                                        <p>Developing and optimizing robust Android applications as a dedicated full-time developer.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- CONTACT (.css) -->
+                    <div class="panel" id="panel-contact">
+                        <div class="rich-layout contact-layout">
+                            <div class="contact-info">
+                                <h2 class="section-heading">Get In Touch</h2>
+                                <p class="contact-sub">Always open to discussing new projects, creative ideas, or opportunities to be part of your visions.</p>
+                                
+                                <div class="social-links-big">
+                                    <a href="mailto:albinap952654@gmail.com" class="glass-btn btn-mail" id="email-me-btn">
+                                        <i data-lucide="mail"></i> Email Me
+                                    </a>
+                                    <a href="https://github.com/albinaprasad" target="_blank" class="glass-btn btn-github">
+                                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" width="24" height="24" alt="GitHub" style="filter: invert(1);"> GitHub
+                                    </a>
+                                    <a href="https://www.linkedin.com/in/albin-ap-415161250/" target="_blank" class="glass-btn btn-linkedin">
+                                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg" width="24" height="24" alt="LinkedIn"> LinkedIn
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-form glass-card">
+                                <form id="contact-form" action="https://formsubmit.co/albinap952654@gmail.com" method="POST">
+                                    <!-- Optional FormSubmit config: disable captcha or provide a hidden subject -->
+                                    <input type="hidden" name="_subject" value="New message from your Portfolio!">
+                                    
+                                    <div class="input-group">
+                                        <label>Your Name</label>
+                                        <input type="text" name="name" placeholder="John Doe" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Email Address</label>
+                                        <input type="email" name="email" placeholder="john@example.com" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Message</label>
+                                        <textarea rows="4" name="message" placeholder="How can we help you?" required></textarea>
+                                    </div>
+                                    <button type="submit" class="submit-btn">Send Message <i data-lucide="send" size="16"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- EXTENSION DETAIL PANEL -->
+                <div class="panel" id="panel-extension-detail" style="padding:0; overflow:auto;">
+                    <div id="ext-detail-content" style="height:100%;"></div>
+                </div>
+
+                <!-- Terminal Panel -->
+                <div class="terminal-panel hidden" id="terminal-panel">
+                    <div class="terminal-header">
+                        <div class="terminal-tabs">
+                            <span class="terminal-tab">PROBLEMS</span>
+                            <span class="terminal-tab">OUTPUT</span>
+                            <span class="terminal-tab">DEBUG CONSOLE</span>
+                            <span class="terminal-tab active">TERMINAL</span>
+                        </div>
+                        <div class="terminal-actions">
+                            <i class="codicon codicon-plus"></i>
+                            <i class="codicon codicon-trash" id="clear-terminal-btn"></i>
+                            <i class="codicon codicon-close" id="close-terminal"></i>
+                        </div>
+                    </div>
+                    <div class="terminal-body" id="terminal-body">
+                        <div class="terminal-output" id="terminal-output">
+                            <div class="terminal-line"><span class="terminal-prompt">albin@portfolio</span>:<span class="term-dir">~/portfolio$</span> Welcome to Albin's Terminal! Type <span class="term-highlight">'help'</span> to see available commands.</div>
+                        </div>
+                        <div class="terminal-input-line">
+                            <span class="terminal-prompt">albin@portfolio</span>:<span class="term-dir">~/portfolio$</span>
+                            <input type="text" id="terminal-input" autocomplete="off" spellcheck="false">
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <!-- (existing status bar content remains unchanged) -->
+            <div class="status-left">
+                <span class="status-item remote-icon"><i data-lucide="rss" size="12"></i></span>
+                <span class="status-item"><i data-lucide="git-branch" size="12" style="margin-right: 5px;"></i> main*</span>
+                <span class="status-item"><i data-lucide="x-circle" size="12" style="margin-right: 3px;"></i> 0 <i data-lucide="alert-triangle" size="12" style="margin-left: 5px; margin-right: 3px;"></i> 0</span>
+                <span class="status-item">Albin A P</span>
+            </div>
+            <div class="status-right">
+                <span class="status-item">UTF-8</span>
+                <span class="status-item"><i data-lucide="check-check" size="12" style="margin-right: 5px;"></i> Prettier</span>
+                <span class="status-item" id="clock">10:00 AM</span>
+            </div>
+        </footer>
+
+        <!-- Command Palette (VS Code Search) -->
+        <div class="command-palette-overlay" id="command-palette">
+            <div class="command-palette-container">
+                <div class="command-input-wrapper">
+                    <i data-lucide="search" size="16"></i>
+                    <input type="text" id="command-input" placeholder="Search files by name (e.g., 'projects', 'about')..." autocomplete="off">
+                    <span class="shortcut-hint">esc to close</span>
+                </div>
+                <ul class="command-list" id="command-list">
+                    <li class="command-item" data-target="home"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/react_ts.svg" width="16" height="16"></span> home.tsx</li>
+                    <li class="command-item" data-target="about"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/html.svg" width="16" height="16"></span> about.html</li>
+                    <li class="command-item" data-target="skills"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/json.svg" width="16" height="16"></span> skills.json</li>
+                    <li class="command-item" data-target="projects"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/javascript.svg" width="16" height="16"></span> projects.js</li>
+                    <li class="command-item" data-target="experience"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/typescript.svg" width="16" height="16"></span> experience.ts</li>
+                    <li class="command-item" data-target="contact"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/css.svg" width="16" height="16"></span> contact.css</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
