@@ -7,14 +7,11 @@
     <meta name="description" content="Portfolio of Albin A P, Android Developer">
     <link rel="stylesheet" href="styles.css">
     
-    <!-- Fonts: Outfit for sleek modern UI, Fira Code for Code -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- VS Code Codicons for exact icon matching -->
     <link href="https://cdn.jsdelivr.net/npm/@vscode/codicons/dist/codicon.css" rel="stylesheet">
-    <!-- Confetti for easter egg -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -22,7 +19,6 @@
 </head>
 <body>
     <div class="vscode-app">
-        <!-- Title Bar -->
         <header class="titlebar">
             <div class="titlebar-nav">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg" alt="VS Code Icon" class="vscode-icon">
@@ -46,7 +42,6 @@
         </header>
 
         <div class="main-layout">
-            <!-- Activity Bar (Far Left) -->
             <nav class="activity-bar">
                 <div class="activity-top">
                     <div class="activity-icon active" title="Explorer"><i class="codicon codicon-files" style="font-size: 24px;"></i></div>
@@ -61,10 +56,8 @@
                 </div>
             </nav>
 
-            <!-- Sidebar (Explorer + Extensions) -->
             <aside class="sidebar">
 
-                <!-- EXPLORER VIEW -->
                 <div id="sidebar-explorer">
                     <div class="sidebar-header">
                         <span>EXPLORER</span>
@@ -97,7 +90,6 @@
                     </div>
                 </div>
 
-                <!-- EXTENSIONS VIEW -->
                 <div id="sidebar-extensions" style="display:none;">
                     <div class="sidebar-header">
                         <span>EXTENSIONS</span>
@@ -162,12 +154,9 @@
 
             </aside>
 
-            <!-- Editor Area -->
             <main class="editor-area" style="position: relative;">
-                <!-- Global Three.js Canvas Container -->
                 <div id="threejs-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; pointer-events: none;"></div>
 
-                <!-- Tabs -->
                 <div class="editor-tabs" style="position: relative; z-index: 10;">
                     <div class="tab active" data-target="home"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/react_ts.svg" width="16" height="16"></span> home.tsx <span class="close-tab">&times;</span></div>
                     <div class="tab" data-target="about"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/html.svg" width="16" height="16"></span> about.html <span class="close-tab">&times;</span></div>
@@ -177,15 +166,12 @@
                     <div class="tab" data-target="contact"><span class="file-icon"><img src="https://cdn.jsdelivr.net/gh/PKief/vscode-material-icon-theme@main/icons/css.svg" width="16" height="16"></span> contact.css <span class="close-tab">&times;</span></div>
                 </div>
                 
-                <!-- Breadcrumbs -->
                 <div class="breadcrumbs" style="position: relative; z-index: 10;">
                     <span>portfolio</span> <i data-lucide="chevron-right" size="12"></i> <span id="current-file-breadcrumb">home.tsx</span>
                 </div>
 
-                <!-- Content Panels -->
                 <div class="editor-content" style="position: relative; z-index: 1;">
                     
-                    <!-- HOME (.tsx) -->
                     <div class="panel active" id="panel-home">
                         <div class="hero-container">
                             <div class="hero-glass">
@@ -223,7 +209,6 @@
                         </div>
                     </div>
 
-                    <!-- ABOUT (.html) -->
                     <div class="panel" id="panel-about">
                         <div class="rich-layout">
                             <div class="about-grid">
@@ -250,7 +235,6 @@
                         </div>
                     </div>
 
-                    <!-- SKILLS (.json) -->
                     <div class="panel" id="panel-skills">
                         <div class="rich-layout">
                             <h2 class="section-heading">Technical Arsenal</h2>
@@ -263,7 +247,7 @@
                             </div>
 
                             <div class="skill-category">
-                                <h3>Frameworks & Tools</h3>
+                                <h3>Frameworks &amp; Tools</h3>
                                 <div class="skill-flex">
                                     <span class="skill-pill">Android Studio</span>
                                     <span class="skill-pill">Jetpack Compose</span>
@@ -285,13 +269,11 @@
                         </div>
                     </div>
 
-                    <!-- PROJECTS (.js) -->
                     <div class="panel" id="panel-projects">
                         <div class="rich-layout">
                             <h2 class="section-heading">Featured Projects</h2>
                             <div class="projects-grid">
                                 
-                                <!-- Spotify Clone -->
                                 <div class="glass-card project-ui-card">
                                     <div class="project-header">
                                         <i data-lucide="music" class="project-icon"></i>
@@ -307,7 +289,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Facial Feature Extraction -->
                                 <div class="glass-card project-ui-card">
                                     <div class="project-header">
                                         <i data-lucide="scan-face" class="project-icon"></i>
@@ -323,7 +304,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Car Overtaking Prediction -->
                                 <div class="glass-card project-ui-card">
                                     <div class="project-header">
                                         <i data-lucide="car" class="project-icon"></i>
@@ -339,7 +319,6 @@
                                     </div>
                                 </div>
 
-                                <!-- SkinCare Booking App -->
                                 <div class="glass-card project-ui-card">
                                     <div class="project-header">
                                         <i data-lucide="heart-pulse" class="project-icon"></i>
@@ -355,7 +334,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Calculator App -->
                                 <div class="glass-card project-ui-card">
                                     <div class="project-header">
                                         <i data-lucide="calculator" class="project-icon"></i>
@@ -375,7 +353,6 @@
                         </div>
                     </div>
 
-                    <!-- EXPERIENCE (.ts) -->
                     <div class="panel" id="panel-experience">
                         <div class="rich-layout">
                             <h2 class="section-heading">Experience Timeline</h2>
@@ -397,7 +374,6 @@
                         </div>
                     </div>
 
-                    <!-- CONTACT (.css) -->
                     <div class="panel" id="panel-contact">
                         <div class="rich-layout contact-layout">
                             <div class="contact-info">
@@ -419,7 +395,6 @@
                             
                             <div class="contact-form glass-card">
                                 <form id="contact-form" action="https://formsubmit.co/albinap952654@gmail.com" method="POST">
-                                    <!-- Optional FormSubmit config: disable captcha or provide a hidden subject -->
                                     <input type="hidden" name="_subject" value="New message from your Portfolio!">
                                     
                                     <div class="input-group">
@@ -442,12 +417,10 @@
 
                 </div>
 
-                <!-- EXTENSION DETAIL PANEL -->
                 <div class="panel" id="panel-extension-detail" style="padding:0; overflow:auto;">
                     <div id="ext-detail-content" style="height:100%;"></div>
                 </div>
 
-                <!-- Terminal Panel -->
                 <div class="terminal-panel hidden" id="terminal-panel">
                     <div class="terminal-header">
                         <div class="terminal-tabs">
@@ -475,9 +448,7 @@
             </main>
         </div>
 
-        <!-- Status Bar -->
         <footer class="status-bar">
-            <!-- (existing status bar content remains unchanged) -->
             <div class="status-left">
                 <span class="status-item remote-icon"><i data-lucide="rss" size="12"></i></span>
                 <span class="status-item"><i data-lucide="git-branch" size="12" style="margin-right: 5px;"></i> main*</span>
@@ -491,7 +462,6 @@
             </div>
         </footer>
 
-        <!-- Command Palette (VS Code Search) -->
         <div class="command-palette-overlay" id="command-palette">
             <div class="command-palette-container">
                 <div class="command-input-wrapper">
@@ -513,8 +483,8 @@
 
     <script src="script.js"></script>
     <script>
-        // Initialize Lucide Icons
         lucide.createIcons();
     </script>
+
 </body>
 </html>

@@ -5,48 +5,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const panels = document.querySelectorAll('.panel');
     const breadcrumb = document.getElementById('current-file-breadcrumb');
 
-    // Function to switch active file/tab
     function switchTab(targetId) {
-        // Update Sidebar
         fileItems.forEach(item => item.classList.remove('active'));
         const activeFile = document.querySelector(`.file-item[data-target="${targetId}"]`);
         if(activeFile) activeFile.classList.add('active');
 
-        // Update Tabs
         tabs.forEach(tab => tab.classList.remove('active'));
         const activeTab = document.querySelector(`.tab[data-target="${targetId}"]`);
         if(activeTab) {
-            activeTab.style.display = ''; // Unhide if it was closed
+            activeTab.style.display = '';
             activeTab.classList.add('active');
-            // Update breadcrumb
             breadcrumb.textContent = activeTab.textContent.replace('×', '').trim();
         }
 
-        // Update Panels
         panels.forEach(panel => panel.classList.remove('active'));
         const activePanel = document.getElementById(`panel-${targetId}`);
         if(activePanel) {
             activePanel.classList.add('active');
-            // Trigger resize so ThreeJS can recalculate container size when it becomes visible
             window.dispatchEvent(new Event('resize'));
         }
     }
 
-    // Add click listeners to sidebar files
     fileItems.forEach(item => {
         item.addEventListener('click', () => {
             switchTab(item.dataset.target);
         });
     });
 
-    // Add click listeners to top tabs
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             switchTab(tab.dataset.target);
         });
     });
 
-    // Clock in status bar
     function updateClock() {
         const now = new Date();
         const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -56,40 +47,34 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateClock, 1000);
     updateClock();
 
-    // === Three.js 3D Animation for About Section ===
     function initThreeJS() {
         const container = document.getElementById('threejs-container');
         if (!container) return;
 
         const scene = new THREE.Scene();
         
-        // Camera
         const aspect = container.clientWidth > 0 ? container.clientWidth / container.clientHeight : 1;
         const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
         camera.position.z = 4;
 
-        // Renderer
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setClearColor(0x000000, 0); // Transparent background
+        renderer.setClearColor(0x000000, 0);
         container.appendChild(renderer.domElement);
 
-        // Subtle Particle System
         const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 800; // Number of particles
+        const particlesCount = 800;
         const posArray = new Float32Array(particlesCount * 3);
 
         for(let i = 0; i < particlesCount * 3; i++) {
-            // Spread particles across a wide 3D space
             posArray[i] = (Math.random() - 0.5) * 15;
         }
 
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         
-        // Subtle material
         const particlesMaterial = new THREE.PointsMaterial({
             size: 0.02,
-            color: 0x0ea5e9, // Accent blue
+            color: 0x0ea5e9,
             transparent: true,
             opacity: 0.3,
             blending: THREE.AdditiveBlending
@@ -98,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particlesMesh);
 
-        // Handle Resize
         window.addEventListener('resize', () => {
             if (container.clientWidth > 0 && container.clientHeight > 0) {
                 camera.aspect = container.clientWidth / container.clientHeight;
@@ -110,24 +94,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let mouseX = 0;
         let mouseY = 0;
 
-        // Optional: Very subtle interaction with mouse to give it life
         container.addEventListener('mousemove', (event) => {
             mouseX = (event.clientX / window.innerWidth) - 0.5;
             mouseY = (event.clientY / window.innerHeight) - 0.5;
         });
 
-        // Animation Loop
         const clock = new THREE.Clock();
 
         function animate() {
             requestAnimationFrame(animate);
             const elapsedTime = clock.getElapsedTime();
 
-            // Very slow, subtle rotation
             particlesMesh.rotation.y = elapsedTime * 0.05;
             particlesMesh.rotation.x = elapsedTime * 0.02;
 
-            // Very subtle float effect towards mouse
             particlesMesh.position.x += (mouseX * 0.5 - particlesMesh.position.x) * 0.05;
             particlesMesh.position.y += (-mouseY * 0.5 - particlesMesh.position.y) * 0.05;
             
@@ -137,53 +117,43 @@ document.addEventListener('DOMContentLoaded', () => {
         animate();
     }
 
-    // Call after a short delay to ensure layout is computed
     setTimeout(initThreeJS, 100);
 
-    // === Command Palette Logic (VS Code Search) ===
     const commandPalette = document.getElementById('command-palette');
     const commandInput = document.getElementById('command-input');
     const commandList = document.getElementById('command-list');
     const commandItems = Array.from(document.querySelectorAll('.command-item'));
     const searchIcon = document.querySelector('.activity-icon[title="Search"]');
 
-    // Track which file-related icon was last active (so we can restore it after palette closes)
     let lastActiveFileIcon = document.querySelector('.activity-icon[title="Explorer"]');
     document.querySelectorAll('.activity-icon[title="Explorer"], .activity-icon[title="Source Control"], .activity-icon[title="Run and Debug"], .activity-icon[title="Extensions"]').forEach(icon => {
         icon.addEventListener('click', () => {
             lastActiveFileIcon = icon;
-            // Stop bug smasher if clicking away from debug tab
             if (window.abortBugSmasher && icon.id !== 'activity-debug-toggle') {
                 window.abortBugSmasher();
             }
         });
     });
     
-    // Open palette — highlight search icon
     function openCommandPalette() {
         commandPalette.classList.add('active');
         commandInput.value = '';
         commandInput.focus();
         filterCommands('');
-        // Highlight search icon
         document.querySelectorAll('.activity-icon').forEach(i => i.classList.remove('active'));
         if (searchIcon) searchIcon.classList.add('active');
     }
 
-    // Close palette — restore the last active file icon
     function closeCommandPalette() {
         commandPalette.classList.remove('active');
-        // Remove search highlight, restore previous
         if (searchIcon) searchIcon.classList.remove('active');
         if (lastActiveFileIcon) lastActiveFileIcon.classList.add('active');
     }
 
-    // Toggle on Search icon click
     if (searchIcon) {
         searchIcon.addEventListener('click', openCommandPalette);
     }
 
-    // Keyboard Shortcuts (Ctrl/Cmd + P to open, Escape to close)
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
             e.preventDefault();
@@ -194,14 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Close when clicking outside the modal container
     commandPalette.addEventListener('click', (e) => {
         if (e.target === commandPalette) {
             closeCommandPalette();
         }
     });
 
-    // Filtering logic
     function filterCommands(query) {
         query = query.toLowerCase();
         let firstVisible = null;
@@ -218,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // Auto-select the first visible item for quick Enter-key pressing
         if (firstVisible) {
             firstVisible.classList.add('selected');
         }
@@ -228,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
         filterCommands(e.target.value);
     });
 
-    // Handle selection from palette
     commandItems.forEach(item => {
         item.addEventListener('click', () => {
             switchTab(item.dataset.target);
@@ -237,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Press Enter to select the top item
     commandInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const selected = commandList.querySelector('.command-item.selected');
@@ -249,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === Terminal Logic ===
     const terminalInput = document.getElementById('terminal-input');
     const terminalOutput = document.getElementById('terminal-output');
     const terminalBody = document.getElementById('terminal-body');
@@ -257,12 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeTerminalBtn = document.getElementById('close-terminal');
     const clearTerminalBtn = document.getElementById('clear-terminal-btn');
 
-    // Focus terminal input when clicking anywhere in terminal body
     terminalBody.addEventListener('click', () => {
         terminalInput.focus();
     });
 
-    // Helper to sync terminal icon state
     function syncTerminalIcon() {
         const isOpen = !terminalPanel.classList.contains('hidden');
         if (activityTerminalToggle) {
@@ -277,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
             titleBarFile.classList.toggle('active', !isOpen);
         }
 
-        // Abort bug smasher if terminal is closed mid-game
         if (!isOpen && window.abortBugSmasher) {
             window.abortBugSmasher();
             const debugToggle = document.getElementById('activity-debug-toggle');
@@ -289,7 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Toggle terminal from the top Title Bar menu
     const titleBarTerminalToggle = document.getElementById('title-bar-terminal-toggle');
     if (titleBarTerminalToggle) {
         titleBarTerminalToggle.addEventListener('click', () => {
@@ -301,13 +261,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Toggle terminal from the LEFT Activity Bar terminal icon
     const activityTerminalToggle = document.getElementById('activity-terminal-toggle');
     if (activityTerminalToggle) {
         activityTerminalToggle.addEventListener('click', () => {
             terminalPanel.classList.toggle('hidden');
             const isOpen = !terminalPanel.classList.contains('hidden');
-            // Visual glow on terminal icon when open, but DON'T change Explorer active state
             activityTerminalToggle.classList.toggle('terminal-open', isOpen);
             if (isOpen) {
                 terminalInput.focus();
@@ -315,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- TAB CLOSING LOGIC ---
     const closeTabButtons = document.querySelectorAll('.close-tab');
     closeTabButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -336,13 +293,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // Close Terminal (X button)
     closeTerminalBtn.addEventListener('click', () => {
         terminalPanel.classList.add('hidden');
         syncTerminalIcon();
     });
 
-    // Toggle terminal shortcut (Ctrl/Cmd + `)
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === '`') {
             e.preventDefault();
@@ -354,13 +309,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Clear Terminal Button
     clearTerminalBtn.addEventListener('click', () => {
         terminalOutput.innerHTML = '';
         terminalInput.focus();
     });
 
-    // Print to terminal utility
     function printToTerminal(text, className = '') {
         const line = document.createElement('div');
         line.className = `terminal-line ${className}`;
@@ -369,13 +322,11 @@ document.addEventListener('DOMContentLoaded', () => {
         terminalBody.scrollTop = terminalBody.scrollHeight;
     }
 
-    // Command parser
     terminalInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const val = terminalInput.value.trim();
             if (!val) return;
 
-            // Echo the command
             printToTerminal(`<span class="terminal-prompt">albin@portfolio</span>:<span class="term-dir">~/portfolio$</span> ${val}`);
             
             terminalInput.value = '';
@@ -424,7 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
             printToTerminal(`<pre class="term-success" style="font-size: 10px;">${asciiArt}</pre>`);
             printToTerminal(`ACCESS GRANTED. Firing confetti!`, 'term-success');
             
-            // Trigger confetti
             if (typeof confetti === 'function') {
                 var duration = 3000;
                 var end = Date.now() + duration;
@@ -454,7 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // === EXTENSIONS PANEL LOGIC ===
     const extensionsData = {
         kotlin: {
             name: 'Kotlin Language Support',
@@ -543,16 +492,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const ext = extensionsData[extKey];
         if (!ext) return;
 
-        // Mark active in sidebar list
         extItems.forEach(i => i.classList.remove('active'));
         const activeItem = document.querySelector(`.ext-item[data-ext="${extKey}"]`);
         if (activeItem) activeItem.classList.add('active');
 
-        // Open the detail panel
         panels.forEach(p => p.classList.remove('active'));
         document.getElementById('panel-extension-detail').classList.add('active');
 
-        // Render the detail page
         extDetailContent.innerHTML = `
             <div class="ext-detail-page">
                 <div class="ext-detail-banner">
@@ -578,18 +524,15 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        // Update breadcrumb
         breadcrumb.textContent = ext.name;
     }
 
-    // Click on extension item in sidebar
     extItems.forEach(item => {
         item.addEventListener('click', () => {
             showExtensionDetail(item.dataset.ext);
         });
     });
 
-    // Extension search filter
     if (extSearch) {
         extSearch.addEventListener('input', (e) => {
             const q = e.target.value.toLowerCase();
@@ -600,18 +543,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Switch to Extensions view when Extensions icon clicked
     if (extensionsActivityIcon) {
         extensionsActivityIcon.addEventListener('click', () => {
             sidebarExplorer.style.display = 'none';
             sidebarExtensions.style.display = 'block';
-            // Mark active
             document.querySelectorAll('.activity-icon').forEach(i => i.classList.remove('active'));
             extensionsActivityIcon.classList.add('active');
         });
     }
 
-    // Switch back to Explorer view when Explorer icon clicked
     if (explorerActivityIcon) {
         explorerActivityIcon.addEventListener('click', () => {
             sidebarExtensions.style.display = 'none';
@@ -621,11 +561,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === Contact Form AJAX Submission ===
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent standard page redirect
+            e.preventDefault();
             
             const submitBtn = contactForm.querySelector('.submit-btn');
             const originalBtnText = submitBtn.innerHTML;
@@ -642,25 +581,21 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 if (data.success === "true" || data.success === true) {
-                    // Success! Clear the inputs
                     contactForm.reset();
                     
-                    // Temporarily show success message
                     submitBtn.innerHTML = 'Sent! <i data-lucide="check-circle" size="16"></i>';
-                    submitBtn.style.background = '#23d18b'; // VS Code success green
+                    submitBtn.style.background = '#23d18b';
                     lucide.createIcons();
                     
-                    // Show in terminal as a cool easter egg
                     if (typeof printToTerminal === 'function') {
                         terminalPanel.classList.remove('hidden');
                         syncTerminalIcon();
                         printToTerminal(`Message successfully dispatched to albinap952654@gmail.com!`, 'term-success');
                     }
                     
-                    // Reset button back to normal after 3 seconds
                     setTimeout(() => {
                         submitBtn.innerHTML = originalBtnText;
-                        submitBtn.style.background = ''; // reset to default CSS
+                        submitBtn.style.background = '';
                         lucide.createIcons();
                     }, 3000);
                 } else {
@@ -669,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 submitBtn.innerHTML = 'Error Sending <i data-lucide="x-circle" size="16"></i>';
-                submitBtn.style.background = '#f48771'; // Error color
+                submitBtn.style.background = '#f48771';
                 lucide.createIcons();
                 
                 setTimeout(() => {
@@ -681,18 +616,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === Email Reveal Button ===
     const emailMeBtn = document.getElementById('email-me-btn');
     if (emailMeBtn) {
         emailMeBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Stop from opening mail client immediately
+            e.preventDefault();
             const originalHTML = emailMeBtn.innerHTML;
             
-            // Show email
             emailMeBtn.innerHTML = '<i data-lucide="check"></i> albinap952654@gmail.com';
             lucide.createIcons();
             
-            // Conveniently copy it to clipboard
             navigator.clipboard.writeText('albinap952654@gmail.com').catch(() => {});
             
             setTimeout(() => {
@@ -702,7 +634,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === Bug Smasher Mini-Game (Debug Icon) ===
     const debugToggle = document.getElementById('activity-debug-toggle');
     let isDebugging = false;
     let bugsSquashed = 0;
@@ -726,23 +657,19 @@ document.addEventListener('DOMContentLoaded', () => {
             isDebugging = true;
             bugsSquashed = 0;
 
-            // Highlight icon
             document.querySelectorAll('.activity-icon').forEach(icon => icon.classList.remove('active'));
             debugToggle.classList.add('active');
 
-            // Open Terminal securely
             if (terminalPanel.classList.contains('hidden')) {
                 terminalPanel.classList.remove('hidden');
                 syncTerminalIcon();
             }
 
-            // Print Start Messages
             if (typeof printToTerminal === 'function') {
                 printToTerminal(`> Debug Session Started: Squashing bugs in Albin_Portfolio.kt...`, 'term-info');
                 setTimeout(() => printToTerminal(`> CRITICAL: ${totalBugs} elusive bugs detected! Squish them!`, 'term-error'), 800);
             }
 
-            // Spawn the bugs
             setTimeout(() => {
                 for (let i = 0; i < totalBugs; i++) {
                     spawnBug();
@@ -753,12 +680,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function spawnBug() {
         const bug = document.createElement('div');
-        // Random bug icon
         const bugIcons = ['🐞', '🪲', '🐛', '🕷️', '🦗'];
         bug.textContent = bugIcons[Math.floor(Math.random() * bugIcons.length)];
         bug.className = 'bug-icon';
         
-        // Random starting position
         let x = Math.random() * (window.innerWidth - 50);
         let y = Math.random() * (window.innerHeight - 50);
         bug.style.left = x + 'px';
@@ -766,12 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         document.body.appendChild(bug);
 
-        // Random walking speed and angles
         let angle = Math.random() * Math.PI * 2;
         let speed = 1.5 + Math.random() * 2;
         
         const walkInterval = setInterval(() => {
-            // Change direction slightly
             if (Math.random() < 0.05) {
                 angle += (Math.random() - 0.5) * Math.PI;
             }
@@ -779,11 +702,9 @@ document.addEventListener('DOMContentLoaded', () => {
             x += Math.cos(angle) * speed;
             y += Math.sin(angle) * speed;
 
-            // Bounce off walls
             if (x < 0 || x > window.innerWidth - 30) angle = Math.PI - angle;
             if (y < 0 || y > window.innerHeight - 30) angle = -angle;
 
-            // Update position and rotate bug towards travel direction
             bug.style.left = x + 'px';
             bug.style.top = y + 'px';
             bug.style.transform = `rotate(${angle + Math.PI/2}rad)`;
@@ -791,7 +712,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         activeIntervals.push(walkInterval);
 
-        // Squash mechanic
         bug.addEventListener('mousedown', function() {
             clearInterval(walkInterval);
             this.classList.add('squashed');
@@ -804,7 +724,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             setTimeout(() => this.remove(), 300);
 
-            // Win condition
             if (bugsSquashed === totalBugs) {
                 isDebugging = false;
                 activeIntervals = [];
@@ -816,7 +735,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }, 800);
                 setTimeout(() => {
-                    // Reset icon highlight to files
                     document.querySelectorAll('.activity-icon').forEach(icon => icon.classList.remove('active'));
                     document.querySelector('.activity-icon[title="Explorer"]').classList.add('active');
                 }, 2500);
